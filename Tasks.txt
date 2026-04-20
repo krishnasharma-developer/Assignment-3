@@ -1,0 +1,153 @@
+FILE_NAME = "tasks.txt"
+
+# Add Task
+def add_task():
+    task_id = input("Enter Task ID: ")
+    description = input("Enter Task Description: ")
+    status = "Pending"
+
+    file = open(FILE_NAME, "a")
+    file.write(task_id + "|" + description + "|" + status + "\n")
+    file.close()
+
+    print("Task added successfully!\n")
+
+
+# View Tasks
+def view_tasks():
+    try:
+        file = open(FILE_NAME, "r")
+        print("\n--- Task List ---")
+
+        data = file.read()
+        if not data:
+            print("No tasks found.\n")
+        else:
+            file.seek(0)  # Using seek as required
+            for line in file:
+                tid, desc, status = line.strip().split("|")
+                print("ID:", tid, "| Task:", desc, "| Status:", status)
+
+        file.close()
+
+    except FileNotFoundError:
+        print("File not found.\n")
+
+
+# Update Task
+def update_task():
+    task_id = input("Enter Task ID to update: ")
+    updated = False
+
+    file = open(FILE_NAME, "r")
+    tasks = file.readlines()
+    file.close()
+
+    file = open(FILE_NAME, "w")
+
+    for task in tasks:
+        tid, desc, status = task.strip().split("|")
+
+        if tid == task_id:
+            print("1. Update Description")
+            print("2. Mark as Completed")
+            choice = input("Enter choice: ")
+
+            if choice == "1":
+                desc = input("Enter new description: ")
+            elif choice == "2":
+                status = "Completed"
+
+            updated = True
+
+        file.write(tid + "|" + desc + "|" + status + "\n")
+
+    file.close()
+
+    if updated:
+        print("Task updated successfully!\n")
+    else:
+        print("Task ID not found.\n")
+
+
+# Delete Task
+def delete_task():
+    task_id = input("Enter Task ID to delete: ")
+    deleted = False
+
+    file = open(FILE_NAME, "r")
+    tasks = file.readlines()
+    file.close()
+
+    file = open(FILE_NAME, "w")
+
+    for task in tasks:
+        tid, desc, status = task.strip().split("|")
+
+        if tid != task_id:
+            file.write(task)
+        else:
+            deleted = True
+
+    file.close()
+
+    if deleted:
+        print("Task deleted successfully!\n")
+    else:
+        print("Task ID not found.\n")
+
+
+# Search Task (Optional - for extra marks)
+def search_task():
+    keyword = input("Enter Task ID or keyword: ")
+    found = False
+
+    try:
+        file = open(FILE_NAME, "r")
+
+        for line in file:
+            if keyword in line:
+                print(line.strip())
+                found = True
+
+        file.close()
+
+        if not found:
+            print("No matching task found.\n")
+
+    except FileNotFoundError:
+        print("File not found.\n")
+
+
+# Main Menu
+def main():
+    while True:
+        print("----- TO-DO NOTES BUILDER -----")
+        print("1. Add Task")
+        print("2. View Tasks")
+        print("3. Update Task")
+        print("4. Delete Task")
+        print("5. Search Task")
+        print("6. Exit")
+
+        choice = input("Enter your choice: ")
+
+        if choice == "1":
+            add_task()
+        elif choice == "2":
+            view_tasks()
+        elif choice == "3":
+            update_task()
+        elif choice == "4":
+            delete_task()
+        elif choice == "5":
+            search_task()
+        elif choice == "6":
+            print("Exiting program...")
+            break
+        else:
+            print("Invalid choice!\n")
+
+
+# Run program
+main()
